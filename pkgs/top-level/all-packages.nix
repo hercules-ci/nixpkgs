@@ -11397,6 +11397,9 @@ in
   # justStaticExecutables is needed due to https://github.com/NixOS/nix/issues/2990
   cachix = haskell.lib.justStaticExecutables haskellPackages.cachix;
 
+  # justStaticExecutables is needed due to https://github.com/NixOS/nix/issues/2990
+  hercules-ci-agent = haskell.lib.justStaticExecutables haskellPackages.hercules-ci-agent;
+
   niv = haskellPackages.niv.bin;
 
   ormolu = haskellPackages.ormolu.bin;
