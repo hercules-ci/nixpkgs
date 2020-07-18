@@ -24,12 +24,12 @@ common =
   , withAWS ? !enableStatic && (stdenv.isLinux || stdenv.isDarwin), aws-sdk-cpp
   , enableStatic ? false
   , name, suffix ? "", src
-
+  , patches ? []
   }:
   let
      sh = busybox-sandbox-shell;
      nix = stdenv.mkDerivation rec {
-      inherit name src;
+      inherit name src patches;
       version = lib.getVersion name;
 
       is24 = lib.versionAtLeast version "2.4pre";
@@ -188,6 +188,9 @@ in rec {
       url = "https://nixos.org/releases/nix/${name}/${name}.tar.xz";
       sha256 = "dd8f52849414e5a878afe7e797aa4e22bab77c875d9da5a38d5f1bada704e596";
     };
+    patches = [
+      ./static.patch
+    ];
 
     inherit storeDir stateDir confDir boehmgc;
   } // stdenv.lib.optionalAttrs stdenv.cc.isClang {

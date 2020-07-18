@@ -1,0 +1,15 @@
+Credits to matthewbauer https://raw.githubusercontent.com/matthewbauer/nixpkgs/3afa626b43d492c58e9c286451d8a1308b3e2c18/pkgs/tools/package-management/nix/static.patch
+
+diff --git a/mk/libraries.mk b/mk/libraries.mk
+index e6ef2e3e..f5bff484 100644
+--- a/mk/libraries.mk
++++ b/mk/libraries.mk
+@@ -128,7 +128,7 @@ define build-library
+ 	$(trace-ld) $(LD) -Ur -o $$(_d)/$$($(1)_NAME).o $$?
+ 	$(trace-ar) $(AR) crs $$@ $$(_d)/$$($(1)_NAME).o
+ 
+-    $(1)_LDFLAGS_USE += $$($(1)_PATH) $$($(1)_LDFLAGS)
++    $(1)_LDFLAGS_USE += -Wl,--whole-archive $$($(1)_PATH) -Wl,--no-whole-archive $$($(1)_LDFLAGS)
+ 
+     $(1)_INSTALL_PATH := $$(libdir)/$$($(1)_NAME).a
+ 
