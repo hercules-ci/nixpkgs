@@ -1,0 +1,53 @@
+commit 229744ea3a1ea104803468d8337dda32c2682a62
+Author: Robert Hensing <robert@roberthensing.nl>
+Date:   Fri Jul 17 15:01:58 2020 +0200
+
+    Try to substitute if no build method available
+
+diff --git a/src/libstore/build.cc b/src/libstore/build.cc
+index ac2e6757..7c40cd34 100644
+--- a/src/libstore/build.cc
++++ b/src/libstore/build.cc
+@@ -1204,7 +1204,7 @@ void DerivationGoal::haveDerivation()
+     /* We are first going to try to create the invalid output paths
+        through substitutes.  If that doesn't work, we'll build
+        them. */
+-    if (settings.useSubstitutes && parsedDrv->substitutesAllowed())
++    if (settings.useSubstitutes && (parsedDrv->substitutesAllowed() || !canBuild()))
+         for (auto & i : invalidOutputs)
+             addWaitee(worker.makeSubstitutionGoal(i, buildMode == bmRepair ? Repair : NoRepair));
+ 
+@@ -5149,5 +5149,8 @@ void LocalStore::repairPath(const StorePath & path)
+     }
+ }
+ 
++bool canBuild() {
++  return settings.maxBuildJobs > 0 || !getMachines().empty();
++}
+ 
+ }
+diff --git a/src/libstore/misc.cc b/src/libstore/misc.cc
+index e68edb38..41bd6ece 100644
+--- a/src/libstore/misc.cc
++++ b/src/libstore/misc.cc
+@@ -202,7 +202,7 @@ void Store::queryMissing(const std::vector<StorePathWithOutputs> & targets,
+                     invalid.insert(printStorePath(j.second.path));
+             if (invalid.empty()) return;
+ 
+-            if (settings.useSubstitutes && parsedDrv.substitutesAllowed()) {
++            if (settings.useSubstitutes && (parsedDrv.substitutesAllowed() || !canBuild())) {
+                 auto drvState = make_ref<Sync<DrvState>>(DrvState(invalid.size()));
+                 for (auto & output : invalid)
+                     pool.enqueue(std::bind(checkOutput, printStorePath(path.path), drv, output, drvState));
+diff --git a/src/libstore/store-api.hh b/src/libstore/store-api.hh
+index a4be0411..ba8a7451 100644
+--- a/src/libstore/store-api.hh
++++ b/src/libstore/store-api.hh
+@@ -842,4 +842,7 @@ std::optional<ValidPathInfo> decodeValidPathInfo(
+ /* Split URI into protocol+hierarchy part and its parameter set. */
+ std::pair<std::string, Store::Params> splitUriAndParams(const std::string & uri);
+ 
++/* Whether we can build derivations, one way or another */
++bool canBuild();
++
+ }

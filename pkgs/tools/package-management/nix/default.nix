@@ -190,6 +190,7 @@ in rec {
     };
     patches = [
       ./static.patch
+      ./nix-substitute-if-cant-build.diff
     ];
 
     inherit storeDir stateDir confDir boehmgc;
