@@ -27,6 +27,11 @@ let
       ''}
     ${cfg.extraConfig}
   '';
+
+  allConfigPaths = [configFile] ++ cfg.extraConfigPaths;
+
+  configOptions = escapeShellArgs (concatMap (p: ["-config" p]) allConfigPaths);
+
 in
 
 {
@@ -98,6 +103,19 @@ in
         default = "";
         description = "Extra text appended to <filename>vault.hcl</filename>.";
       };
+
+      extraConfigPaths = mkOption {
+        type = types.listOf types.path;
+        default = [];
+        description = ''
+          Configuration files to load besides the immutable one defined by the NixOS module.
+          This can be used to avoid putting credentials in the Nix store, which can be read by any user.
+
+          Each path can point to a JSON- or HCL-formatted file, or a directory
+          to be scanned for files with <literal>.hcl</literal> or
+          <literal>.json</literal> extensions.
+        '';
+      };
     };
   };
 
@@ -136,7 +154,7 @@ in
       serviceConfig = {
         User = "vault";
         Group = "vault";
-        ExecStart = "${cfg.package}/bin/vault server -config ${configFile}";
+        ExecStart = "${cfg.package}/bin/vault server ${configOptions}";
         ExecReload = "${pkgs.coreutils}/bin/kill -SIGHUP $MAINPID";
         PrivateDevices = true;
         PrivateTmp = true;
