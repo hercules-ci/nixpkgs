@@ -498,7 +498,13 @@ rec {
       if isDefined then
         if all (def: type.check def.value) defsFinal then type.merge loc defsFinal
         else let firstInvalid = findFirst (def: ! type.check def.value) null defsFinal;
-        in throw "The option value `${showOption loc}' in `${firstInvalid.file}' is not of type `${type.description}'."
+        in 
+          builtins.trace "DEBUG: firstInvalid" (
+          builtins.trace firstInvalid (
+          builtins.trace "DEBUG: defsFinal" (
+          builtins.trace defsFinal (
+            (throw "The option value `${showOption loc}' in `${firstInvalid.file}' is not of type `${type.description}'.")
+          ))))
       else
         # (nixos-option detects this specific error message and gives it special
         # handling.  If changed here, please change it there too.)
