@@ -5,8 +5,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/NixOS/nixops.git";
-        rev = "1ed5a091bc52de6c91319f446f833018a1cb326e";
-        sha256 = "1fx17qv9cl7hz7322zh4xlg02xn7bwwjj82cdcvqpsjf83crz3xi";
+        rev = "23db83fc91952d2dbcc64b8aa1ac16f8c8f45bed";
+        sha256 = "0dpw82hs5kqrrvv7gcrdpjms1dq93431fzg9hrxqs0b9spl2rl6r";
       };
     }
   );
@@ -25,8 +25,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/nix-community/nixops-encrypted-links.git";
-        rev = "0bb9aa50a7294ee9dca10a18ff7d9024234913e1";
-        sha256 = "00wj03wcry83acwljq5v80dyrqaxpqb4j3jsdkfy3d7n5g4aq19l";
+        rev = "e2f196fce15fcfb00d18c055e1ac53aec33b8fb1";
+        sha256 = "12ynqwd5ad6wfyv6sma55wnmrlr8i14kd5d42zqv4zl23h0xnd6m";
       };
     }
   );
@@ -35,8 +35,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/nix-community/nixops-gce.git";
-        rev = "23596af53eabc4e3bcf72beaaed82b2c8d40e419";
-        sha256 = "10gfdhf4b3ldrpns8z66mqxwfcbgf9ccz8fx0rcp7gsgsffb0i3c";
+        rev = "fed6aadace9a9e914425589c065bb969d53f2309";
+        sha256 = "096ic1kzlcv8cx51hnhlq37pkg4pis2rk5kri14dwp3865si1mdw";
       };
     }
   );
