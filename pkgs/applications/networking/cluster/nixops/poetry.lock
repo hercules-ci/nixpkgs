@@ -217,9 +217,9 @@ typing-extensions = "^3.7.4"
 
 [package.source]
 type = "git"
-url = "https://github.com/NixOS/nixops-aws.git"
-reference = "master"
-resolved_reference = "dbbaa1b15b6cf7ca1ceeb0a6195f5ee27693c505"
+url = "https://github.com/hercules-ci/nixops-aws.git"
+reference = "instance-types"
+resolved_reference = "5cafbf9648cccedc5d5aa0bd4cbcd80346bba2c8"
 
 [[package]]
 name = "nixops-encrypted-links"
@@ -571,7 +571,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bd064837654a0d4a4691b3df01338b92c95a449ff400a9cd49fee843ab13ee92"
+content-hash = "f9d7ac173f5097c67bb3a23e8f37ff8106f040cbbd7d0a379606f04ef323d66e"
 
 [metadata.files]
 alabaster = [

@@ -14,9 +14,9 @@ self: super: {
   nixops-aws = super.nixops-aws.overridePythonAttrs (
     _: {
       src = pkgs.fetchgit {
-        url = "https://github.com/NixOS/nixops-aws.git";
-        rev = "dbbaa1b15b6cf7ca1ceeb0a6195f5ee27693c505";
-        sha256 = "13gw3h7g19a0s7dpayjfksrmw6g0364dcm5z2d6mlyzdkfgak4jn";
+        url = "https://github.com/hercules-ci/nixops-aws.git";
+        rev = "5cafbf9648cccedc5d5aa0bd4cbcd80346bba2c8";
+        sha256 = "0ipcgvrj2rp89jz03x76qj92dvrs4fm3g1a73c0cgfgx5h1gj81l";
       };
     }
   );
