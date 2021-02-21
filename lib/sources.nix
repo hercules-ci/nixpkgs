@@ -12,6 +12,7 @@ let
     tryEval
     ;
   inherit (lib)
+    boolToString
     filter
     getAttr
     isString
@@ -105,6 +106,8 @@ let
       ) // {
         satisfiesSubpathInvariant = src ? satisfiesSubpathInvariant && src.satisfiesSubpathInvariant;
       };
+
+  setName = name: src: cleanSourceWith { inherit name src; };
 
   # Filter sources by a list of regular expressions.
   #
@@ -237,6 +240,7 @@ in {
     sourceByRegex
     sourceFilesBySuffices
 
+    setName
     trace
     ;
 }
