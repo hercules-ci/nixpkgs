@@ -90,6 +90,22 @@ let
       name = if name != null then name else orig.name;
     };
 
+  trace = src:
+    let
+      attrs = toSourceAttributes src;
+    in
+      fromSourceAttributes (
+        attrs // {
+          filter = path: type:
+            let
+              r = attrs.filter path type;
+            in
+              builtins.trace "${attrs.name}.filter ${path} = ${boolToString r}" r;
+        }
+      ) // {
+        satisfiesSubpathInvariant = src ? satisfiesSubpathInvariant && src.satisfiesSubpathInvariant;
+      };
+
   # Filter sources by a list of regular expressions.
   #
   # E.g. `src = sourceByRegex ./my-subproject [".*\.py$" "^database.sql$"]`
@@ -221,5 +237,7 @@ in {
 
     sourceByRegex
     sourceFilesBySuffices
+
+    trace
     ;
 }
