@@ -235,7 +235,7 @@ let
       # https://github.com/NixOS/nixpkgs/pull/81371#issuecomment-605526099
       wantedBy = optionals (!config.boot.isContainer) [ "multi-user.target" ];
 
-      path = with pkgs; [ lego coreutils diffutils ];
+      path = with pkgs; [ lego coreutils diffutils openssl ];
 
       serviceConfig = commonServiceConfig // {
         Group = data.group;
@@ -274,6 +274,27 @@ let
       script = ''
         set -euxo pipefail
 
+        is_expiration_skippable() {
+          pem=$1
+
+          [[ -e $pem ]]
+
+          expiration_line="$(
+            set -euxo pipefail
+            openssl x509 -noout -enddate <$pem \
+                  | grep notAfter \
+                  | sed -e 's/^notAfter=//'
+          )"
+          [[ -n "$expiration_line" ]]
+
+          expiration_date="$(date -d "$expiration_line" +%s)"
+          now="$(date +%s)"
+          expiration_s=$[expiration_date - now]
+          expiration_days=$[expiration_s / (3600 * 24)]   # rounds down
+
+          [[ 1 = $[expiration_days > ${toString cfg.validMinDays} ] ]]
+        }
+
         ${optionalString (data.webroot != null) ''
           # Ensure the webroot exists
           mkdir -p '${data.webroot}/.well-known/acme-challenge'
@@ -288,8 +309,14 @@ let
           # When domains are updated, there's no need to do a full
           # Lego run, but it's likely renew won't work if days is too low.
           if [ -e certificates/domainhash.txt ] && cmp -s domainhash.txt certificates/domainhash.txt; then
-            lego ${renewOpts} --days ${toString cfg.validMinDays}
+            if is_expiration_skippable out/full.pem; then
+              echo 1>&2 "nixos-acme: skipping renewal because expiration isn't within the coming ${toString cfg.validMinDays} days"
+            else
+              echo 1>&2 "nixos-acme: renewing now, because certificate expires within the configured ${toString cfg.validMinDays} days"
+              lego ${renewOpts} --days ${toString cfg.validMinDays}
+            fi
           else
+            echo 1>&2 "certificate domain(s) have changed; will renew now"
             # Any number > 90 works, but this one is over 9000 ;-)
             lego ${renewOpts} --days 9001
           fi
