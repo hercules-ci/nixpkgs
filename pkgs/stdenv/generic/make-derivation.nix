@@ -89,6 +89,8 @@ in rec {
 
     , patches ? []
 
+    , src ? null
+
     , ... } @ attrs:
 
     let
@@ -242,6 +244,26 @@ in rec {
           inherit doCheck doInstallCheck;
 
           inherit outputs;
+
+          src =
+            if attrs ? src.root && attrs ? src.subpath then 
+              src.root
+            else
+              src;
+
+          subpath =
+            if attrs ? src.root && attrs ? src.subpath && attrs.src.subpath != [] then
+              lib.concatStringsSep "/" src.subpath
+            else
+              null;
+
+          # TODO simplify by adding to unpackPhase instead.
+          #      I haven't done it yet to avoid a mass rebuild while working on this.
+          postUnpack = if attrs ? src.root && attrs ? src.subpath && attrs.src.subpath != [] then ''
+            sourceRoot="$sourceRoot/$subpath"
+            ${attrs.postUnpack or ""}
+          '' else attrs.postUnpack or null;
+
         } // lib.optionalAttrs (stdenv.hostPlatform != stdenv.buildPlatform) {
           cmakeFlags =
             (/**/ if lib.isString cmakeFlags then [cmakeFlags]
