@@ -1740,6 +1740,9 @@ self: super: {
   # May be possible to remove at the next release (1.11.0)
   taskell = doJailbreak super.taskell;
 
+  # Too strict version bound on hspec-golden:
+  tomland = doJailbreak super.tomland;
+
   # ghc-bignum is not buildable if none of the three backends
   # is explicitly enabled. We enable Native for now as it doesn't
   # depend on anything else as oppossed to GMP and FFI.
