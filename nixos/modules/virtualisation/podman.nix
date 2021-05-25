@@ -121,6 +121,9 @@ in
 
       systemd.packages = [ cfg.package ];
 
+      systemd.services.podman.path = [
+        pkgs.iproute2
+      ];
       systemd.services.podman.serviceConfig = {
         ExecStart = [ "" "${cfg.package}/bin/podman $LOGGING system service" ];
       };
