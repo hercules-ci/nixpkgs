@@ -75,7 +75,11 @@ buildGoModule rec {
     runHook postInstall
   '';
 
-  passthru.tests = { inherit (nixosTests) podman; };
+  passthru.tests = {
+    inherit (nixosTests) podman;
+    # related modules
+    inherit (nixosTests) podman-tls-ghostunnel;
+  };
 
   meta = with lib; {
     homepage = "https://podman.io/";
