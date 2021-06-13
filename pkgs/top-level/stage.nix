@@ -245,6 +245,8 @@ let
         gcc.abi = "elfv2";
       };
     });
+
+    pkgsHeadless = self.extend (import ./headless.nix);
   };
 
   # The complete chain of package set builders, applied from top to bottom.
