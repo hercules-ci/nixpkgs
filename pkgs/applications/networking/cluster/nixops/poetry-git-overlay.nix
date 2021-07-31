@@ -5,8 +5,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/NixOS/nixops.git";
-        rev = "45256745cef246dabe1ae8a7d109988f190cd7ef";
-        sha256 = "0ni1v8ppg5cf35gq7nzd50kajxzp5zkbzhf022in0fgbjcprlzr2";
+        rev = "ba05fe50ce09d8ebd37d0ffe04a4cfb822be98dd";
+        sha256 = "06i8p7axn8ks6v50jkkx3c40ay368p88n7gyc0wwqmvldlwv8vm2";
       };
     }
   );
@@ -15,8 +15,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/NixOS/nixops-aws.git";
-        rev = "3f66ee06f689021cd4c985b9b49697bdda64d961";
-        sha256 = "17vn8bpy9kr259anmh3g5xwp08q69l9sz7s3nzn8sy5flqa87w50";
+        rev = "0056e0467dd24324f079e8d9925eb1c8756fb671";
+        sha256 = "0g37ybm0sj3xs9y3q5q3j4scambc066fxc81iki30l8w5a763h5y";
       };
     }
   );
@@ -35,8 +35,18 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/nix-community/nixops-gce.git";
-        rev = "fed6aadace9a9e914425589c065bb969d53f2309";
-        sha256 = "096ic1kzlcv8cx51hnhlq37pkg4pis2rk5kri14dwp3865si1mdw";
+        rev = "9ec29bee440c5eea780339ff3aa856e2d061e4ee";
+        sha256 = "0s03i4jyk81jv58wg9xklav9schyspj5ncgk8zz3bzn37dh21pp9";
+      };
+    }
+  );
+
+  nixops-hercules-ci = super.nixops-hercules-ci.overridePythonAttrs (
+    _: {
+      src = pkgs.fetchgit {
+        url = "https://github.com/hercules-ci/nixops-hercules-ci.git";
+        rev = "110fdd12e78e84c18d11854c6f01c489f4877b70";
+        sha256 = "0smj8j003mvww6a99d25sv3k5djn9hqm8gj25lf76xsj7pdn69p8";
       };
     }
   );
@@ -45,8 +55,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/nix-community/nixops-libvirtd.git";
-        rev = "af6cf5b2ced57b7b6d36b5df7dd27a14e0a5cfb6";
-        sha256 = "1j75yg8a44dlbig38mf7n7p71mdzff6ii1z1pdp32i4ivk3l0hy6";
+        rev = "9a229e29cc662a7b89ebd4520dd231a087958bb5";
+        sha256 = "15k4fwn6pxmssfzqbah89k0gh330dnqz8njdd58xsbhga4pnvv06";
       };
     }
   );
