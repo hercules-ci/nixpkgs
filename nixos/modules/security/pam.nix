@@ -125,7 +125,7 @@ let
       };
 
       fprintAuth = mkOption {
-        default = config.services.fprintd.enable;
+        default = false;
         type = types.bool;
         description = ''
           If set, fingerprint reader will be used (if exists and
@@ -375,16 +375,7 @@ let
           account required pam_unix.so
           ${optionalString use_ldap
               "account sufficient ${pam_ldap}/lib/security/pam_ldap.so"}
-          ${optionalString (config.services.sssd.enable && cfg.sssdStrictAccess==false)
-              "account sufficient ${pkgs.sssd}/lib/security/pam_sss.so"}
-          ${optionalString (config.services.sssd.enable && cfg.sssdStrictAccess)
-              "account [default=bad success=ok user_unknown=ignore] ${pkgs.sssd}/lib/security/pam_sss.so"}
-          ${optionalString config.krb5.enable
-              "account sufficient ${pam_krb5}/lib/security/pam_krb5.so"}
-          ${optionalString cfg.googleOsLoginAccountVerification ''
-            account [success=ok ignore=ignore default=die] ${pkgs.google-compute-engine-oslogin}/lib/pam_oslogin_login.so
-            account [success=ok default=ignore] ${pkgs.google-compute-engine-oslogin}/lib/pam_oslogin_admin.so
-          ''}
+
 
           # Authentication management.
           ${optionalString cfg.googleOsLoginAuthentication
@@ -395,8 +386,6 @@ let
               "auth required pam_wheel.so use_uid"}
           ${optionalString cfg.logFailures
               "auth required pam_faillock.so"}
-          ${optionalString (config.security.pam.enableSSHAgentAuth && cfg.sshAgentAuth)
-              "auth sufficient ${pkgs.pam_ssh_agent_auth}/libexec/pam_ssh_agent_auth.so file=${lib.concatStringsSep ":" config.services.openssh.authorizedKeysFiles}"}
           ${let p11 = config.security.pam.p11; in optionalString cfg.p11Auth
               "auth ${p11.control} ${pkgs.pam_p11}/lib/security/pam_p11.so ${pkgs.opensc}/lib/opensc-pkcs11.so"}
           ${let u2f = config.security.pam.u2f; in optionalString cfg.u2fAuth
@@ -449,13 +438,6 @@ let
               "auth sufficient ${pkgs.otpw}/lib/security/pam_otpw.so"}
           ${optionalString use_ldap
               "auth sufficient ${pam_ldap}/lib/security/pam_ldap.so use_first_pass"}
-          ${optionalString config.services.sssd.enable
-              "auth sufficient ${pkgs.sssd}/lib/security/pam_sss.so use_first_pass"}
-          ${optionalString config.krb5.enable ''
-            auth [default=ignore success=1 service_err=reset] ${pam_krb5}/lib/security/pam_krb5.so use_first_pass
-            auth [default=die success=done] ${pam_ccreds}/lib/security/pam_ccreds.so action=validate use_first_pass
-            auth sufficient ${pam_ccreds}/lib/security/pam_ccreds.so action=store use_first_pass
-          ''}
           auth required pam_deny.so
 
           # Password management.
@@ -466,12 +448,6 @@ let
               "password optional ${pkgs.pam_mount}/lib/security/pam_mount.so"}
           ${optionalString use_ldap
               "password sufficient ${pam_ldap}/lib/security/pam_ldap.so"}
-          ${optionalString config.services.sssd.enable
-              "password sufficient ${pkgs.sssd}/lib/security/pam_sss.so use_authtok"}
-          ${optionalString config.krb5.enable
-              "password sufficient ${pam_krb5}/lib/security/pam_krb5.so use_first_pass"}
-          ${optionalString cfg.enableGnomeKeyring
-              "password optional ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so use_authtok"}
 
           # Session management.
           ${optionalString cfg.setEnvironment ''
@@ -482,8 +458,6 @@ let
               "session ${
                 if config.boot.isContainer then "optional" else "required"
               } pam_loginuid.so"}
-          ${optionalString cfg.makeHomeDir
-              "session required ${pkgs.pam}/lib/security/pam_mkhomedir.so silent skel=${config.security.pam.makeHomeDir.skelDirectory} umask=0022"}
           ${optionalString cfg.updateWtmp
               "session required ${pkgs.pam}/lib/security/pam_lastlog.so silent"}
           ${optionalString config.security.pam.enableEcryptfs
@@ -492,8 +466,6 @@ let
               "session optional ${pkgs.pam_mount}/lib/security/pam_mount.so"}
           ${optionalString use_ldap
               "session optional ${pam_ldap}/lib/security/pam_ldap.so"}
-          ${optionalString config.services.sssd.enable
-              "session optional ${pkgs.sssd}/lib/security/pam_sss.so"}
           ${optionalString config.krb5.enable
               "session optional ${pam_krb5}/lib/security/pam_krb5.so"}
           ${optionalString cfg.otpwAuth
@@ -517,8 +489,6 @@ let
               "session optional ${pkgs.pam_gnupg}/lib/security/pam_gnupg.so"
               + optionalString cfg.gnupg.noAutostart " no-autostart"
            }
-          ${optionalString (config.virtualisation.lxc.lxcfs.enable)
-               "session optional ${pkgs.lxc}/lib/security/pam_cgfs.so -c all"}
         '');
     };
 
@@ -858,7 +828,7 @@ in
       # Include the PAM modules in the system path mostly for the manpages.
       [ pkgs.pam ]
       ++ optional config.users.ldap.enable pam_ldap
-      ++ optional config.services.sssd.enable pkgs.sssd
+      # ++ optional config.services.sssd.enable pkgs.sssd
       ++ optionals config.krb5.enable [pam_krb5 pam_ccreds]
       ++ optionals config.security.pam.enableOTPW [ pkgs.otpw ]
       ++ optionals config.security.pam.oath.enable [ pkgs.oathToolkit ]

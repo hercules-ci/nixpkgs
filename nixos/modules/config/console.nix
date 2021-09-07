@@ -35,7 +35,7 @@ let
     ];
   };
 
-  setVconsole = !config.boot.isContainer;
+  setVconsole = true;
 in
 
 {

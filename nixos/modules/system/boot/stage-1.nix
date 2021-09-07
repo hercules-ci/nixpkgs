@@ -410,7 +410,7 @@ in
 
     boot.initrd.enable = mkOption {
       type = types.bool;
-      default = !config.boot.isContainer;
+      default = true;
       defaultText = "!config.boot.isContainer";
       description = ''
         Whether to enable the NixOS initial RAM disk (initrd). This may be

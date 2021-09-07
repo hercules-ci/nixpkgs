@@ -732,19 +732,19 @@ in
 
     # When building a regular system configuration, override whatever
     # video driver the host uses.
-    services.xserver.videoDrivers = mkVMOverride [ "modesetting" ];
-    services.xserver.defaultDepth = mkVMOverride 0;
-    services.xserver.resolutions = mkVMOverride [ { x = 1024; y = 768; } ];
-    services.xserver.monitorSection =
-      ''
-        # Set a higher refresh rate so that resolutions > 800x600 work.
-        HorizSync 30-140
-        VertRefresh 50-160
-      '';
+    # services.xserver.videoDrivers = mkVMOverride [ "modesetting" ];
+    # services.xserver.defaultDepth = mkVMOverride 0;
+    # services.xserver.resolutions = mkVMOverride [ { x = 1024; y = 768; } ];
+    # services.xserver.monitorSection =
+    #   ''
+    #     # Set a higher refresh rate so that resolutions > 800x600 work.
+    #     HorizSync 30-140
+    #     VertRefresh 50-160
+    #   '';
 
     # Wireless won't work in the VM.
-    networking.wireless.enable = mkVMOverride false;
-    services.connman.enable = mkVMOverride false;
+    # networking.wireless.enable = mkVMOverride false;
+    # services.connman.enable = mkVMOverride false;
 
     # Speed up booting by not waiting for ARP.
     networking.dhcpcd.extraConfig = "noarp";

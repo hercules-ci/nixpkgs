@@ -1191,10 +1191,10 @@ in
         pkgs.iputils
         pkgs.nettools
       ]
-      ++ optionals config.networking.wireless.enable [
-        pkgs.wirelesstools # FIXME: obsolete?
-        pkgs.iw
-      ]
+      # ++ optionals config.networking.wireless.enable [
+      #   pkgs.wirelesstools # FIXME: obsolete?
+      #   pkgs.iw
+      # ]
       ++ bridgeStp;
 
     # The network-interfaces target is kept for backwards compatibility.
@@ -1223,9 +1223,8 @@ in
         '';
       };
     };
-    services.mstpd = mkIf needsMstpd { enable = true; };
 
-    virtualisation.vswitch = mkIf (cfg.vswitches != { }) { enable = true; };
+    # virtualisation.vswitch = mkIf (cfg.vswitches != { }) { enable = true; };
 
     services.udev.packages =  [
       (pkgs.writeTextFile rec {

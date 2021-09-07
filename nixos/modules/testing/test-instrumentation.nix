@@ -124,7 +124,7 @@ with import ../../lib/qemu-flags.nix { inherit pkgs; };
     # Make it easy to log in as root when running the test interactively.
     users.users.root.initialHashedPassword = mkOverride 150 "";
 
-    services.xserver.displayManager.job.logToJournal = true;
+    # services.xserver.displayManager.job.logToJournal = true;
 
     # Make sure we use the Guest Agent from the QEMU package for testing
     # to reduce the closure size required for the tests.

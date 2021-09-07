@@ -11,7 +11,7 @@ with lib;
   # This isn't perfect, but let's expect the user specifies an UTF-8 defaultLocale
   i18n.supportedLocales = [ (config.i18n.defaultLocale + "/UTF-8") ];
 
-  documentation.enable = mkDefault false;
+  # documentation.enable = mkDefault false;
 
-  documentation.nixos.enable = mkDefault false;
+  # documentation.nixos.enable = mkDefault false;
 }

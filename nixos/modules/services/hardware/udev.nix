@@ -288,7 +288,7 @@ in
 
   ###### implementation
 
-  config = mkIf (!config.boot.isContainer) {
+  config = mkIf (true) {
 
     services.udev.extraRules = nixosRules;
 

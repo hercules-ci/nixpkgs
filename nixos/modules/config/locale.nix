@@ -76,7 +76,7 @@ in
 
     environment.sessionVariables.TZDIR = "/etc/zoneinfo";
 
-    services.geoclue2.enable = mkIf (lcfg.provider == "geoclue2") true;
+    # services.geoclue2.enable = mkIf (lcfg.provider == "geoclue2") true;
 
     # This way services are restarted when tzdata changes.
     systemd.globalEnvironment.TZDIR = tzdir;

@@ -38,7 +38,7 @@ in
 
       decompressFonts = mkOption {
         type = types.bool;
-        default = config.programs.xwayland.enable;
+        default = false;
         description = ''
           Whether to decompress fonts in
           <filename>/run/current-system/sw/share/X11/fonts</filename>.
