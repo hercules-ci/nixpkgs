@@ -46,8 +46,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/hercules-ci/nixops-hercules-ci.git";
-        rev = "242ac335ad4ed16995535db20c4322244ffc13ea";
-        sha256 = "14dpqyvsvid5vi3xw705ahr4bs3gas1xyxnymiq8r68kvas4bmsc";
+        rev = "777ca6e3d74187aaf89889785ce083bd7e71e83e";
+        sha256 = "1zmbk65ad8kv34hcn79kxswirj3vkks8cdszhbjwd7x2n21lz2g6";
       };
     }
   );

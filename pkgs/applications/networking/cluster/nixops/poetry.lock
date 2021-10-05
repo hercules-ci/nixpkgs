@@ -285,7 +285,7 @@ nixops = {git = "https://github.com/NixOS/nixops.git", branch = "master"}
 type = "git"
 url = "https://github.com/hercules-ci/nixops-hercules-ci.git"
 reference = "master"
-resolved_reference = "242ac335ad4ed16995535db20c4322244ffc13ea"
+resolved_reference = "777ca6e3d74187aaf89889785ce083bd7e71e83e"
 
 [[package]]
 name = "nixops-virtd"
