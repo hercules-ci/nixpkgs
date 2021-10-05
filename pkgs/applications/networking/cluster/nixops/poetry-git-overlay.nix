@@ -46,8 +46,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/hercules-ci/nixops-hercules-ci.git";
-        rev = "7188f26dcdb356748582a92de9f82a492038c548";
-        sha256 = "12abrp65h34qlsshj2y95hx6j3ajz2yx2jizc9sq82lr2bd0vmbk";
+        rev = "242ac335ad4ed16995535db20c4322244ffc13ea";
+        sha256 = "14dpqyvsvid5vi3xw705ahr4bs3gas1xyxnymiq8r68kvas4bmsc";
       };
     }
   );
@@ -56,8 +56,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/nix-community/nixops-libvirtd.git";
-        rev = "9a229e29cc662a7b89ebd4520dd231a087958bb5";
-        sha256 = "15k4fwn6pxmssfzqbah89k0gh330dnqz8njdd58xsbhga4pnvv06";
+        rev = "1245280d97e0adc4643d02d1cf62ddd582c73e49";
+        sha256 = "1z3zsx54585rcyabj6hrbwbd1c783rrlfj53np1sa3i7m93vmxzc";
       };
     }
   );
