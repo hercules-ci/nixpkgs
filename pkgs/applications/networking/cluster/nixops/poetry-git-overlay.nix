@@ -16,8 +16,8 @@ self: super: {
     _: {
       src = pkgs.fetchgit {
         url = "https://github.com/hercules-ci/nixops-aws.git";
-        rev = "e30c874a063d6aee9fb51d9773ce567f4ddddda6";
-        sha256 = "sha256-tgtpv4ch5J6LXCX2SqeCOKF9wz49lT6s/OAKQzCliOg=";
+        rev = "44ae5784f1b50600f7d2d8024b5eef2e9a685797";
+        sha256 = "sha256-mFgsd0/Tt0HxLcVShci0Z5QkDoAc20iy2rU8XoJ2Grk=";
       };
     }
   );
