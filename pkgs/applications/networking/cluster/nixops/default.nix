@@ -3,6 +3,7 @@
 , poetry2nix
 , lib
 , overrides ? (self: super: {})
+, stdenv
 }:
 
 let
@@ -63,10 +64,12 @@ let
   pkg = interpreter.pkgs.nixops.withPlugins(ps: [
     ps.nixops-encrypted-links
     ps.nixops-hercules-ci
-    ps.nixops-virtd
     ps.nixops-aws
     ps.nixops-gcp
     ps.nixopsvbox
+  ] ++ lib.optionals (stdenv.hostPlatform.system != "aarch64-darwin") [
+    # Workaround for https://github.com/NixOS/nixpkgs/issues/146534
+    ps.nixops-virtd
   ]) // rec {
     # Workaround for https://github.com/NixOS/nixpkgs/issues/119407
     # TODO after #1199407: Use .overrideAttrs(pkg: old: { passthru.tests = .....; })
