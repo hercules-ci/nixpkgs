@@ -352,6 +352,33 @@ runTests {
     };
   };
 
+  testRecursiveUpdate1 = {
+    expr = recursiveUpdate {
+      # first attribute set
+      foo.bar = "foo.bar 1";
+      foo.baz = "foo.baz 1";
+      bar = "bar";
+      a.b.c = throw "nope";
+      simple = "simple 1";
+    } {
+      #second attribute set
+      foo.bar = "foo.bar 2";
+      foo.quz = "foo.quz 2";
+      baz = "baz";
+      a = "a 2";
+      simple = "simple 2";
+    };
+    expected = {
+      foo.bar = "foo.bar 2"; # 'foo.*' from the second set
+      foo.baz = "foo.baz 1"; # 'foo.*' from the second set
+      foo.quz = "foo.quz 2"; #
+      bar = "bar";     # 'bar' from the first set
+      baz = "baz";     # 'baz' from the second set
+      a = "a 2";
+      simple = "simple 2";
+    };
+  };
+
   testOverrideExistingEmpty = {
     expr = overrideExisting {} { a = 1; };
     expected = {};

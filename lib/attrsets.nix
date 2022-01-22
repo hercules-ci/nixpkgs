@@ -2,7 +2,7 @@
 # Operations on attribute sets.
 
 let
-  inherit (builtins) head tail length;
+  inherit (builtins) head intersectAttrs tail length;
   inherit (lib.trivial) id;
   inherit (lib.strings) concatStringsSep concatMapStringsSep escapeNixIdentifier sanitizeDerivationName;
   inherit (lib.lists) foldr foldl' concatMap concatLists elemAt all partition groupBy take foldl;
@@ -490,7 +490,7 @@ rec {
      accept 3 arguments which are the path to reach the attribute, a part of
      the first attribute set and a part of the second attribute set.  When
      the predicate is verified, the value of the first attribute set is
-     replaced by the value of the second attribute set.
+     replaced entirely by the value of the second attribute set.
 
      Example:
        recursiveUpdateUntil (path: l: r: path == ["foo"]) {
@@ -513,17 +513,18 @@ rec {
        }
 
      */
-  recursiveUpdateUntil = pred: lhs: rhs:
-    let f = attrPath:
-      zipAttrsWith (n: values:
-        let here = attrPath ++ [n]; in
-        if length values == 1
-        || pred here (elemAt values 1) (head values) then
-          head values
-        else
-          f here values
-      );
-    in f [] [rhs lhs];
+  recursiveUpdateUntil = pred:
+    let
+      go = path: lhs: rhs:
+        if pred path lhs rhs
+        then rhs
+        else lhs // (
+          rhs //
+            mapAttrs
+              (k: go (path ++ [k]) lhs.${k})
+              (intersectAttrs lhs rhs)
+        );
+    in go [];
 
   /* A recursive variant of the update operator ‘//’.  The recursion
      stops when one of the attribute values is not an attribute set,
@@ -544,7 +545,10 @@ rec {
        }
 
      */
-  recursiveUpdate = recursiveUpdateUntil (path: lhs: rhs: !(isAttrs lhs && isAttrs rhs));
+  recursiveUpdate = lhs: rhs:
+    if isAttrs rhs && isAttrs lhs
+    then lhs // (rhs // mapAttrs (k: recursiveUpdate lhs.${k}) (intersectAttrs lhs rhs))
+    else rhs;
 
   /* Returns true if the pattern is contained in the set. False otherwise.
 
