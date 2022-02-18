@@ -231,7 +231,7 @@ rec {
 
     in
       test // {
-        inherit test driver driverInteractive nodes;
+        inherit test driver driverInteractive;
       };
 
   abortForFunction = functionName: abort ''The ${functionName} function was
