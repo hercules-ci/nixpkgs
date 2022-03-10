@@ -4,7 +4,7 @@
   # used in hercules-ci-agent and cachix.
   # Aliasing this separately unblocks updates that require a release of the
   # bindings.
-  hercules-ci-cnix-nix-version ? "nix_2_4"
+  hercules-ci-cnix-nix-version ? "nix_2_7"
 
   # passthru.tests
 , cachix
