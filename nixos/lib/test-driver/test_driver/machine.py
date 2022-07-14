@@ -196,8 +196,10 @@ class StartCommand:
         monitor_socket_path: Path,
         shell_socket_path: Path,
     ) -> subprocess.Popen:
+        cmd = self.cmd(monitor_socket_path, shell_socket_path)
+        print(f"starting vm: {cmd}")
         return subprocess.Popen(
-            self.cmd(monitor_socket_path, shell_socket_path),
+            cmd,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
