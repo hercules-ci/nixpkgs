@@ -71,6 +71,8 @@ in lib.makeExtensible (self: {
     patches = [ ./patches/flaky-tests.patch ];
   };
 
+  # Please check for any remaining usages before removing a version.
+
   stable = self.nix_2_10;
 
   unstable = self.stable;
