@@ -849,14 +849,22 @@ self: super: builtins.intersectAttrs super {
 
   rel8 = addTestToolDepend pkgs.postgresql super.rel8;
 
-  cachix = generateOptparseApplicativeCompletion "cachix" (super.cachix.override { nix = pkgs.nixVersions.nix_2_9; });
+  cachix = generateOptparseApplicativeCompletion "cachix" (super.cachix.override { nix = self.hercules-ci-cnix-store.nix; });
 
-  hercules-ci-agent = super.hercules-ci-agent.override { nix = pkgs.nixVersions.nix_2_9; };
+  hercules-ci-agent = super.hercules-ci-agent.override { nix = self.hercules-ci-cnix-store.nix; };
   hercules-ci-cnix-expr =
     addTestToolDepend pkgs.git (
-      super.hercules-ci-cnix-expr.override { nix = pkgs.nixVersions.nix_2_9; }
+      super.hercules-ci-cnix-expr.override { nix = self.hercules-ci-cnix-store.nix; }
     );
-  hercules-ci-cnix-store = super.hercules-ci-cnix-store.override { nix = pkgs.nixVersions.nix_2_9; };
+  hercules-ci-cnix-store =
+    let
+      # The Nix C++ interface changes often, so this package needs to pin to a
+      # minor version. It can be updated after upstream minor/patch releases.
+      # maintainer: @roberth
+      nix = pkgs.nixVersions.nix_2_9;
+    in
+      overrideCabal (drv: { passthru = drv.passthru or {} // { inherit nix; }; })
+        (super.hercules-ci-cnix-store.override (o: { inherit nix; }));
 
   # Enable extra optimisations which increase build time, but also
   # later compiler performance, so we should do this for user's benefit.
