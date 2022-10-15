@@ -3,6 +3,31 @@
 {
   testEqualDerivation = callPackage ./test-equal-derivation.nix { };
 
+  testEqualContents = {
+    assertion,
+    actual,
+    expected,
+  }: runCommand "equal-contents-${lib.strings.toLower assertion}" {
+    inherit assertion actual expected;
+  } ''
+    echo "Checking:"
+    echo "$assertion"
+    if ! diff -U5 -r "$actual" "$expected" --color=always
+    then
+      echo
+      echo 'Contents must be equal, but were not!'
+      echo
+      echo "+: expected, at $expected"
+      echo "-: actual,   at $actual"
+      exit 1
+    else
+      echo "expected: $expected"
+      echo "actual:   $actual"
+      echo 'OK'
+      touch $out
+    fi
+  '';
+
   testVersion =
     { package,
       command ? "${package.meta.mainProgram or package.pname or package.name} --version",

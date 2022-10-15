@@ -1,4 +1,4 @@
-{ testers, lib, pkgs, ... }:
+{ testers, lib, pkgs, runCommand, ... }:
 let
   pkgs-with-overlay = pkgs.extend(final: prev: {
     proof-of-overlay-hello = prev.hello;
@@ -24,4 +24,20 @@ lib.recurseIntoAttrs {
       machine.succeed("hello | figlet >/dev/console")
     '';
   });
+
+  testEqualContentsEqual = testers.testEqualContents {
+    assertion = "The same directory contents at different paths are recognized as equal";
+    expected = runCommand "expected" {} ''
+      mkdir -p $out/c
+      echo a >$out/a
+      echo b >$out/b
+      echo d >$out/c/d
+    '';
+    actual = runCommand "actual" {} ''
+      mkdir -p $out/c
+      echo a >$out/a
+      echo b >$out/b
+      echo d >$out/c/d
+    '';
+  };
 }

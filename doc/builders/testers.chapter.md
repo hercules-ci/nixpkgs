@@ -35,6 +35,30 @@ passthru.tests.version = testers.testVersion {
 };
 ```
 
+## `testEqualContents` {#tester-equalContents}
+
+Check that two paths have the same contents.
+
+Example:
+
+```nix
+testers.testEqualContents {
+  assertion = "sed -e performs replacement";
+  expected = writeText "expected" ''
+    foo baz baz
+  '';
+  actual = runCommand "actual" {
+    # not really necessary for a package that's in stdenv
+    nativeBuildInputs = [ gnused ];
+    base = writeText "base" ''
+      foo bar baz
+    '';
+  } ''
+    sed -e 's/bar/baz/g' $base >$out
+  '';
+}
+```
+
 ## `testEqualDerivation` {#tester-testEqualDerivation}
 
 Checks that two packages produce the exact same build instructions.
