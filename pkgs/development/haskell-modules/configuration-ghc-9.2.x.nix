@@ -83,6 +83,7 @@ self: super: {
 
   # 2022-08-01: Tests are broken on ghc 9.2.4: https://github.com/wz1000/HieDb/issues/46
   hiedb = dontCheck super.hiedb;
+  hiedb_0_4_2_0 = dontCheck super.hiedb_0_4_2_0;
 
   # Too strict upper bound on bytestring, relevant for GHC 9.2.6 specifically
   # https://github.com/protolude/protolude/issues/127#issuecomment-1428807874

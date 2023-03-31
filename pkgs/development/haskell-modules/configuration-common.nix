@@ -1559,8 +1559,15 @@ self: super: {
   # 2022-09-19: https://github.com/haskell/haskell-language-server/issues/3200
   hls-refactor-plugin = dontCheck super.hls-refactor-plugin;
 
-  # tests require network
-  ghcide = dontCheck super.ghcide;
+  # dontCheck: tests require network
+  # 2023-03-31: ghcide-1.9.1.0 requires overrides
+  ghcide = dontCheck (super.ghcide.override {
+    hie-bios = self.hie-bios_0_11_0;
+    hiedb = self.hiedb_0_4_2_0;
+  });
+  implicit-hie-cradle = super.implicit-hie-cradle.override {
+    hie-bios = self.hie-bios_0_11_0;
+  };
 
   # 2020-11-15: nettle tests are pre MonadFail change
   # https://github.com/stbuehler/haskell-nettle/issues/10
