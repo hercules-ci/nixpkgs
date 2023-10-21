@@ -34934,8 +34934,9 @@ with pkgs;
   };
 
   qemu-utils = callPackage ../applications/virtualization/qemu/utils.nix {
-    # By using qemu_test we remove many unused dependencies from the build closure, saving rebuilds, space, and dependency build errors.
-    qemu = qemu_test;
+    qemu = qemu.override (o: {
+      toolsOnly = true;
+    });
   };
 
   canokey-qemu = callPackage ../applications/virtualization/qemu/canokey-qemu.nix { };
