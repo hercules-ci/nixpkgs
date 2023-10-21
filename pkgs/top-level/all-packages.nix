@@ -34933,7 +34933,7 @@ with pkgs;
     inherit (darwin) sigtool;
   };
 
-  qemu-utils = callPackage ../applications/virtualization/qemu/utils.nix { };
+  qemu-utils = callPackage ../applications/virtualization/qemu/utils.nix { qemu = qemu_kvm; };
 
   canokey-qemu = callPackage ../applications/virtualization/qemu/canokey-qemu.nix { };
 
