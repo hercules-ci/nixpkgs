@@ -264,6 +264,7 @@ let
     additionalSpace = "0M";
     copyChannel = false;
     OVMF = cfg.efi.OVMF;
+    qemu-utils = cfg.qemu.package;
   };
 
   storeImage = import ../../lib/make-disk-image.nix {
@@ -278,6 +279,7 @@ let
     diskSize = "auto";
     additionalSpace = "0M";
     copyChannel = false;
+    qemu-utils = cfg.qemu.package;
   };
 
 in

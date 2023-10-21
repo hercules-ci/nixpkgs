@@ -191,6 +191,13 @@ To solve this, you can run `fdisk -l $image` and generate `dd if=$image of=$imag
 
 , # Additional store paths to copy to the image's store.
   additionalPaths ? []
+
+, # Overridable qemu-utils package. It is used for repackaging the image when
+  # `format` is specified.
+  #
+  # You may specify a different version of qemu-utils, or the full qemu package.
+  # The latter may save some duplication.
+  qemu-utils ? pkgs.qemu-utils
 }:
 
 assert (lib.assertOneOf "partitionTableType" partitionTableType [ "legacy" "legacy+gpt" "efi" "hybrid" "none" ]);
@@ -511,7 +518,7 @@ let format' = format; in let
     ${if format == "raw" then ''
       mv $diskImage $out/${filename}
     '' else ''
-      ${pkgs.qemu-utils}/bin/qemu-img convert -f raw -O ${format} ${compress} $diskImage $out/${filename}
+      ${qemu-utils}/bin/qemu-img convert -f raw -O ${format} ${compress} $diskImage $out/${filename}
     ''}
     diskImage=$out/${filename}
   '';
