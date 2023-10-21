@@ -248,7 +248,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   passthru = {
     qemu-system-i386 = "bin/qemu-system-i386";
-    tests = {
+    tests = lib.optionalAttrs (!toolsOnly) {
       qemu-tests = finalAttrs.finalPackage.overrideAttrs (_: { doCheck = true; });
     };
     updateScript = gitUpdater {
