@@ -50,7 +50,8 @@ stdenv.mkDerivation (finalAttrs: {
   pname = "qemu"
     + lib.optionalString xenSupport "-xen"
     + lib.optionalString hostCpuOnly "-host-cpu-only"
-    + lib.optionalString nixosTestRunner "-for-vm-tests";
+    + lib.optionalString nixosTestRunner "-for-vm-tests"
+    + lib.optionalString toolsOnly "-utils";
   version = "8.1.2";
 
   src = fetchurl {
@@ -242,8 +243,46 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   # Add a ‘qemu-kvm’ wrapper for compatibility/convenience.
-  postInstall = ''
+  postInstall = lib.optionalString (!toolsOnly) ''
     ln -s $out/bin/qemu-system-${stdenv.hostPlatform.qemuArch} $out/bin/qemu-kvm
+  '';
+
+  # Normal qemu package does not have installcheck make target.
+  # toolsOnly has custom check.
+  doInstallCheck = toolsOnly;
+
+  installCheckPhase = ''
+    runHook preInstallCheck
+    ${lib.optionalString toolsOnly ''
+      # Check the bin directory for unexpected files.
+      (
+        cd $out/bin;
+        echo binaries in qemu-utils package:
+        ls -al
+        for bin in *; do
+          case $bin in
+            elf2dmp) ;;
+            qemu-edid) ;;
+            qemu-img) ;;
+            qemu-io) ;;
+            qemu-nbd) ;;
+            qemu-pr-helper) ;;
+            qemu-storage-daemon) ;;
+            qemu-system-*) # custom message, but just a special case of *)
+              echo "unexpected binary in qemu-utils package: $bin"
+              echo "qemu-utils is not supposed to contain the emulator"
+              exit 1
+              ;;
+            *)
+              echo "nixpkgs: unexpected binary in qemu-utils package: $bin"
+              echo "if it belongs in qemu-utils, add it to the list of expected binaries"
+              exit 1
+              ;;
+          esac
+        done
+      )
+    ''}
+    runHook postInstallCheck
   '';
 
   passthru = {
@@ -264,10 +303,16 @@ stdenv.mkDerivation (finalAttrs: {
 
   meta = with lib; {
     homepage = "http://www.qemu.org/";
-    description = "A generic and open source machine emulator and virtualizer";
+    description =
+      if toolsOnly
+      then "Support tools for qemu, a machine emulator and virtualizer"
+      else "A generic and open source machine emulator and virtualizer";
     license = licenses.gpl2Plus;
-    mainProgram = "qemu-kvm";
     maintainers = with maintainers; [ eelco qyliss ];
     platforms = platforms.unix;
+  }
+  # toolsOnly: Does not have qemu-kvm and there's no main support tool
+  // lib.optionalAttrs (!toolsOnly) {
+    mainProgram = "qemu-kvm";
   };
 })
