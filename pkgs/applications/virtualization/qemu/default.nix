@@ -269,11 +269,6 @@ stdenv.mkDerivation (finalAttrs: {
             qemu-nbd) ;;
             qemu-pr-helper) ;;
             qemu-storage-daemon) ;;
-            qemu-system-*) # custom message, but just a special case of *)
-              echo "unexpected binary in qemu-utils package: $bin"
-              echo "qemu-utils is not supposed to contain the emulator"
-              exit 1
-              ;;
             *)
               echo "nixpkgs: unexpected binary in qemu-utils package: $bin"
               echo "if it belongs in qemu-utils, add it to the list of expected binaries"
