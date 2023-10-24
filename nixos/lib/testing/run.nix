@@ -26,11 +26,26 @@ in
         more dependable.
       '';
     };
+
+    rawTestDerivation = mkOption {
+      type = types.package;
+      description = ''
+        Unfiltered version of `test`, for troubleshooting the test framework and `testBuildFailure` in the test framework's test suite.
+
+        This is not intended for general use. Use `test` instead.
+      '';
+      internal = true;
+    };
   };
 
   config = {
     test = lib.lazyDerivation { # lazyDerivation improves performance when only passthru items and/or meta are used.
-      derivation = hostPkgs.stdenv.mkDerivation {
+      derivation = config.rawTestDerivation;
+      inherit (config) passthru meta;
+    };
+
+    rawTestDerivation =
+      hostPkgs.stdenv.mkDerivation {
         name = "vm-test-run-${config.name}";
 
         requiredSystemFeatures = [ "kvm" "nixos-test" ];
@@ -48,8 +63,6 @@ in
 
         meta = config.meta;
       };
-      inherit (config) passthru meta;
-    };
 
     # useful for inspection (debugging / exploration)
     passthru.config = config;
