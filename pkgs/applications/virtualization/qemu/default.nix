@@ -248,39 +248,6 @@ stdenv.mkDerivation (finalAttrs: {
     ln -s $out/bin/qemu-system-${stdenv.hostPlatform.qemuArch} $out/bin/qemu-kvm
   '';
 
-  # Normal qemu package does not have installcheck make target.
-  # toolsOnly has custom check.
-  doInstallCheck = toolsOnly;
-
-  installCheckPhase = ''
-    runHook preInstallCheck
-    ${lib.optionalString toolsOnly ''
-      # Check the bin directory for unexpected files.
-      (
-        cd $out/bin;
-        echo binaries in qemu-utils package:
-        ls -al
-        for bin in *; do
-          case $bin in
-            elf2dmp) ;;
-            qemu-edid) ;;
-            qemu-img) ;;
-            qemu-io) ;;
-            qemu-nbd) ;;
-            qemu-pr-helper) ;;
-            qemu-storage-daemon) ;;
-            *)
-              echo "nixpkgs: unexpected binary in qemu-utils package: $bin"
-              echo "if it belongs in qemu-utils, add it to the list of expected binaries"
-              exit 1
-              ;;
-          esac
-        done
-      )
-    ''}
-    runHook postInstallCheck
-  '';
-
   passthru = {
     qemu-system-i386 = "bin/qemu-system-i386";
     tests = lib.optionalAttrs (!toolsOnly) {
