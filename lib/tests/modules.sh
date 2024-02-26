@@ -69,6 +69,8 @@ checkConfigOutput '^"one two"$' config.result ./shorthand-meta.nix
 
 checkConfigOutput '^true$' config.result ./test-mergeAttrDefinitionsWithPrio.nix
 
+checkConfigOutput '^true$' config.result ./lazy-option.nix
+
 # Check that a module argument is passed, also when a default is available
 # (but not needed)
 #
