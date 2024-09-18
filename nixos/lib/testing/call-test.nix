@@ -1,13 +1,18 @@
-{ config, extendModules, lib, ... }:
+{
+  config,
+  extendModules,
+  lib,
+  ...
+}:
 let
   inherit (lib) mkOption types;
 
-  unsafeGetAttrPosStringOr = default: name: value:
-    let p = builtins.unsafeGetAttrPos name value;
+  unsafeGetAttrPosStringOr =
+    default: name: value:
+    let
+      p = builtins.unsafeGetAttrPos name value;
     in
-      if p == null
-      then default
-      else p.file + ":" + toString p.line + ":" + toString p.column;
+    if p == null then default else p.file + ":" + toString p.line + ":" + toString p.column;
 
 in
 {
@@ -20,14 +25,16 @@ in
   config = {
     # See https://nixos.org/manual/nixos/unstable#sec-override-nixos-test
     # written in nixos/doc/manual/development/writing-nixos-tests.section.md
-    passthru.extend = args@{ modules, specialArgs ? { } }:
+    passthru.extend =
+      args@{
+        modules,
+        specialArgs ? { },
+      }:
       (extendModules {
         inherit specialArgs;
-        modules =
-          map
-            (lib.setDefaultModuleLocation
-              (unsafeGetAttrPosStringOr "<test.extend module>" "modules" args))
-            modules;
+        modules = map (lib.setDefaultModuleLocation (
+          unsafeGetAttrPosStringOr "<test.extend module>" "modules" args
+        )) modules;
       }).config.test;
   };
 }

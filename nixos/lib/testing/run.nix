@@ -1,4 +1,10 @@
-{ config, hostPkgs, lib, options, ... }:
+{
+  config,
+  hostPkgs,
+  lib,
+  options,
+  ...
+}:
 let
   inherit (lib) types mkOption;
 
@@ -6,13 +12,17 @@ let
     Create a module system definition that overrides an existing option from a different module evaluation.
 
     Type: Option a -> (a -> a) -> Definition a
-   */
+  */
   mkOneUp =
-    /** Option from an existing module evaluation, e.g.
+    /**
+      Option from an existing module evaluation, e.g.
       - `(lib.evalModules ...).options.x` when invoking `evalModules` again,
-      - or `{ options, ... }:` when invoking `extendModules`. */
+      - or `{ options, ... }:` when invoking `extendModules`.
+    */
     opt:
-    /** Function from the old value to the new definition, which will be wrapped with `mkOverride`. */
+    /**
+      Function from the old value to the new definition, which will be wrapped with `mkOverride`.
+    */
     f:
     lib.mkOverride (opt.highestPrio - 1) (f opt.value);
 
@@ -64,7 +74,8 @@ in
     rawTestDerivationArg = finalAttrs: {
       name = "vm-test-run-${config.name}";
 
-      requiredSystemFeatures = [ "nixos-test" ]
+      requiredSystemFeatures =
+        [ "nixos-test" ]
         ++ lib.optionals hostPkgs.stdenv.hostPlatform.isLinux [ "kvm" ]
         ++ lib.optionals hostPkgs.stdenv.hostPlatform.isDarwin [ "apple-virt" ];
 
@@ -81,7 +92,8 @@ in
 
       meta = config.meta;
     };
-    test = lib.lazyDerivation { # lazyDerivation improves performance when only passthru items and/or meta are used.
+    test = lib.lazyDerivation {
+      # lazyDerivation improves performance when only passthru items and/or meta are used.
       derivation = config.rawTestDerivation;
       inherit (config) passthru meta;
     };
@@ -91,10 +103,14 @@ in
 
     # See https://nixos.org/manual/nixos/unstable#sec-override-nixos-test
     # written in nixos/doc/manual/development/writing-nixos-tests.section.md
-    passthru.overrideTestDerivation = f:
-      config.passthru.extend { modules = [{
-        rawTestDerivationArg =
-          mkOneUp options.rawTestDerivationArg (lib.extends (lib.toExtension f));
-      }]; };
+    passthru.overrideTestDerivation =
+      f:
+      config.passthru.extend {
+        modules = [
+          {
+            rawTestDerivationArg = mkOneUp options.rawTestDerivationArg (lib.extends (lib.toExtension f));
+          }
+        ];
+      };
   };
 }
