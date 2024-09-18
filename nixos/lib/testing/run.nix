@@ -16,30 +16,6 @@ let
     f:
     lib.mkOverride (opt.highestPrio - 1) (f opt.value);
 
-  /**
-    Upgrade the overrideAttrs argument to an overlay-style function.
-
-    `toOverlay (old: { foo = f old; })`
-    becomes `(_: old: { foo = f old; })`.
-
-    `toOverlay (finalAttrs: prevAttrs: { foo = f old; })`
-    remains `(finalAttrs: prevAttrs: { foo = f old; })`.
-   */
-  toOverlay =
-    # Function to upgrade
-    f0:
-    # The returned overlay-style function
-    self: super:
-      # See mkDerivation
-      let x = f0 super;
-      in
-        if builtins.isFunction x
-        then
-          # Can't reuse `x`, because `self` comes first.
-          # Looks inefficient, but `f0 super` was a cheap thunk.
-          f0 self super
-        else x;
-
 in
 {
   options = {
@@ -118,7 +94,7 @@ in
     passthru.overrideTestDerivation = f:
       config.passthru.extend { modules = [{
         rawTestDerivationArg =
-          mkOneUp options.rawTestDerivationArg (lib.extends (toOverlay f));
+          mkOneUp options.rawTestDerivationArg (lib.extends (lib.toExtension f));
       }]; };
   };
 }
